@@ -1,0 +1,142 @@
+<mxfile host="65bd71144e">
+    <diagram name="retrieval-flow" id="retrieval-flow-hybrid">
+        <mxGraphModel dx="1745" dy="1750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1650" pageHeight="1850" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="lane-py" parent="1" style="swimlane;startSize=30;html=1;fontSize=16;rounded=1;arcSize=50;strokeWidth=3;container=0;" value="Python retrieval service" vertex="1">
+                    <mxGeometry height="1210" width="680" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-results" parent="lane-py" style="rounded=1;arcSize=6;dashed=1;fillColor=none;strokeColor=#6c8ebf;html=1;whiteSpace=wrap;verticalAlign=top;align=left;spacingLeft=12;fontSize=12;fontColor=#6c8ebf;container=0;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" value="Returned to generate-response flow" vertex="1">
+                    <mxGeometry height="125" width="560" y="1060" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-entry" parent="lane-py" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Query from generate-response flow&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;course, user, question&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="70" width="340" x="160" y="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-fail" parent="lane-py" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;fillColor=#f8cecc;strokeColor=#b85450;" value="Handle failure&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;embedder, search&lt;br&gt;or reranker down&lt;br&gt;never an empty list&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="85" width="155" x="10" y="650" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-fail-error" edge="1" parent="lane-py" source="py-fail" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;strokeColor=#b85450;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="out-error" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="out-chunks" parent="lane-py" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Relevant chunks&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;0–8, best first&lt;br&gt;empty = nothing relevant found&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="70" width="280" x="190" y="1095" as="geometry"/>
+                </mxCell>
+                <mxCell id="out-error" parent="lane-py" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;fillColor=#f8cecc;strokeColor=#b85450;" value="Error&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;failed stage&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="60" width="155" x="10" y="1100" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-keepc" parent="lane-py" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Keep chunk" vertex="1">
+                    <mxGeometry height="50" width="200" x="230" y="860" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-more" parent="lane-py" style="rhombus;whiteSpace=wrap;html=1;fontSize=13;container=0;" value="More chunks?" vertex="1">
+                    <mxGeometry height="70" width="190" x="235" y="950" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-keep-more" edge="1" parent="lane-py" source="py-keepc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-more" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-more-no" edge="1" parent="lane-py" source="py-more" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="out-chunks" value="no">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="lane-st" parent="1" style="swimlane;startSize=30;html=1;fontSize=16;rounded=1;arcSize=50;strokeWidth=3;container=0;" value="Storage" vertex="1">
+                    <mxGeometry height="1210" width="200" x="710" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-stages" parent="1" style="rounded=1;arcSize=2;dashed=1;fillColor=none;strokeColor=#999999;html=1;whiteSpace=wrap;verticalAlign=bottom;align=left;spacingLeft=32;fontSize=11;fontColor=#b85450;container=0;" value="on error ↓" vertex="1">
+                    <mxGeometry height="440" width="600" x="30" y="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-sparse-search" edge="1" parent="1" source="py-sparse" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-search" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="495" y="355"/>
+                            <mxPoint x="330" y="355"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-search-vdb" edge="1" parent="1" source="py-search" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="st-vdb" value="query">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-search-rerank" edge="1" parent="1" source="py-search" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-rerank" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-stage-fail" edge="1" parent="1" source="py-stages" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;dashed=1;strokeColor=#b85450;exitX=0.0958;exitY=1;entryX=0.5;entryY=0;" target="py-fail" value="">
+                    <mxGeometry relative="1" x="-0.1652" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-entry-norm" edge="1" parent="1" source="py-entry" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-norm" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="330" y="145"/>
+                            <mxPoint x="495" y="145"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-norm-sparse" edge="1" parent="1" source="py-norm" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-sparse" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-dense-search" edge="1" parent="1" source="py-dense" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-search" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="165" y="355"/>
+                            <mxPoint x="330" y="355"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="st-vdb" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fontSize=14;container=0;" value="Vector DB&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;(Qdrant)&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="120" width="140" x="740" y="365" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-entry-dense" edge="1" parent="1" source="py-entry" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-dense" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="330" y="145"/>
+                            <mxPoint x="165" y="145"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="py-norm" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Normalize text&lt;font style=&quot;font-size: 11px;&quot;&gt;&lt;br&gt;Strip diacritics, etc..&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="210" x="390" y="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-sparse" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Sparse query vector&lt;br&gt;(BM25)" vertex="1">
+                    <mxGeometry height="50" width="210" x="390" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-search" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Hybrid search&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;dense + sparse, combined with RRF&lt;br&gt;&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="310" x="175" y="385" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-rerank" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Rerank top 20&lt;br&gt;(Qwen3-Reranker-0.6B)&lt;br&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;scores each (question, chunk) pair&lt;br&gt;&lt;/font&gt;" vertex="1">
+                    <mxGeometry height="80" width="280" x="190" y="505" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-dense" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Dense query vectors&lt;br&gt;(Qwen3-Embedding-4B)" vertex="1">
+                    <mxGeometry height="90" width="210" x="60" y="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-next" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fontSize=14;container=0;" value="Next scored chunk" vertex="1">
+                    <mxGeometry height="50" width="200" x="230" y="630" as="geometry"/>
+                </mxCell>
+                <mxCell id="py-thr" parent="1" style="rhombus;whiteSpace=wrap;html=1;fontSize=13;container=0;" value="Score ≥ threshold?" vertex="1">
+                    <mxGeometry height="110" width="240" x="210" y="710" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-rerank-next" edge="1" parent="1" source="py-rerank" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-next" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-next-thr" edge="1" parent="1" source="py-next" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-thr" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-thr-yes" edge="1" parent="1" source="py-thr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="py-keepc" value="yes">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e-thr-no" edge="1" parent="1" source="py-thr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" target="py-more" value="no · skip">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="520" y="765"/>
+                            <mxPoint x="520" y="985"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e-more-yes" edge="1" parent="1" source="py-more" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=12;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="py-next" value="yes">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="200" y="985"/>
+                            <mxPoint x="200" y="655"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
